@@ -1,38 +1,51 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-from pprint import pprint
-import json
+from datetime import datetime
+import pytz
 
-# set up
-scope = ["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
+# API set up - Getting entire sheet
+scope = ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/auth/spreadsheets',
+         "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
 creds = ServiceAccountCredentials.from_json_keyfile_name("creds.json", scope)
 client = gspread.authorize(creds)
 sheet = client.open("API Call Test").sheet1  # Open the spreadhseet
 
 # get data
 data = sheet.get_all_records()  # Get a list of all records
-print(data)
+# print(data)
 
-# print ID of second user
-print(data[1]['ID'])
+# scanned student #
+studentNum = int(input("Enter your student #: "))
 
-# look for User based on name in list of dicts
-matchedName = list(filter(lambda person: person['Name'] == 'Nima Zareian', data))
-print(matchedName)
-
-# look for User based on ID in list of dicts
-matchedID = next((person for person in data if person['ID'] == 1280761), 'User not Found')
+# look for User Row based on ID in list of dicts todo: if user is not found throw exception or write error so next
+#  steps don't run
+matchedID = next((person for person in data if person['ID'] == studentNum), 'User not Found')
 print(matchedID)
 
+# index of item
+index = next((i for i, item in enumerate(data) if item["ID"] == studentNum), 'Student Num not found')
+rowNum = index + 2  # Adding 2 since it doesnt take into account first row and index starts at 0
 
-# Extra data from sheets
-# row = sheet.row_values(2)  # Get a specific row
-# col = sheet.col_values(3)  # Get a specific column
-# cell = sheet.cell(1,2).value  # Get the value of a specific cell
-#
-# insertRow = ["hello", 5, "red", "blue"]
-# sheet.add_rows(insertRow, 4)  # Insert the list as a row at index 4
-#
-# sheet.update_cell(2,2, "CHANGED")  # Update one cell
-#
-# numRows = sheet.row_count  # Get the number of rows in the sheet
+# get current date
+pst = pytz.timezone('America/Los_Angeles')
+currentTime = datetime.now(pst)
+
+currentDay = currentTime.day.__str__() # calendar day
+currentHour = currentTime.time().__str__()  # hour:min:sec
+
+# check if has already tapped in
+colInName = currentDay + ' IN'
+colOutName = currentDay + ' OUT'
+alreadyTappedIn = matchedID[colInName] != ''
+alreadyTappedOut = matchedID[colOutName] != ''
+print(alreadyTappedOut)
+
+# add tapped time
+if not alreadyTappedIn:
+    sheet.update_cell(rowNum, 3, currentHour) # todo: find a better way to determine what col to update. eg. use date?
+    print('timed in')
+elif alreadyTappedIn and not alreadyTappedOut:
+    sheet.update_cell(rowNum, 4, currentHour)
+    print('timed out')
+else:
+    print("couldn't time in/out - Have you already timed in and out for today?")
