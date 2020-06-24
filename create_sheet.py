@@ -30,8 +30,8 @@ rowNum = index + 2  # Adding 2 since it doesnt take into account first row and i
 pst = pytz.timezone('America/Los_Angeles')
 currentTime = datetime.now(pst)
 
-currentDay = currentTime.day.__str__() # calendar day
-currentHour = currentTime.time().__str__()  # hour:min:sec
+currentDay = str(currentTime.day) # calendar day
+currentHour = str(currentTime.time())  # hour:min:sec
 
 # check if has already tapped in
 colInName = currentDay + ' IN'
@@ -41,7 +41,7 @@ alreadyTappedOut = matchedID[colOutName] != ''
 print(alreadyTappedOut)
 
 # add tapped time
-if not alreadyTappedIn:
+if not alreadyTappedIn and not alreadyTappedOut:
     sheet.update_cell(rowNum, 3, currentHour) # todo: find a better way to determine what col to update. eg. use date?
     print('timed in')
 elif alreadyTappedIn and not alreadyTappedOut:
