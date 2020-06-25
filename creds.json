@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "quiet-antler-267221",
+  "private_key_id": "226410bc6fa60252e6423d33cb4cdddd48182339",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCjtEkO7Eo3IuQe\nv/9+U/s3JBvh8uz7WHjqjj4VKGu60O6OJZ0/YVRxNi94CTwotCXxa3zyZGno+fCt\nwWT50QvFXXVf3/jkaYvjxFYUcqWDU2GzdgT2jDcnj5LgtZFl7FyxuXhcpRd5L8RP\nUq/S4wv67/OtisKWcTp7GUuoyw0unIxvmuWd3yHcCjFLkDrKgzv+9qnhqeVbS6hq\nxTX+FOiyLIifODhIdeZ0IH63+txAHsvG4oDceUtN5rh59bJwgjZVttbxXmPUaeu8\nH2GFkhnZvWKpm3aTtmKKjhlh4MJMdXRFFPB3a4OIAF7webgnRXLzjzMLjAsR0wD+\nYJNfelmHAgMBAAECggEAPdLz9nFRc/I24dAT3vM7gC8gYpw6WJAoljijBJ2P1e1a\n8o8NDGcnG1xh3/zo3dxvKfY0qVw3zVc7SHuttVT4E5EAp3UwC586yAmZkr5beLXQ\nQ5TSOgRpPgUQbNHVd/8kYLBRXvewXkGma2ioY0YA+8OMLSGm7GcVtXCvrK8Gqu+0\nxPkZ8wziD6HgVFIulxZcyNSpoWXD+78vmaLmBoJKaBJkZUzqWhsT91uY7IFK7Fc3\ng9E6dRcpMe5bjrmJX1XOGksnHAHDyahHSJfyj0Cb77Om4Uoo2WPVJmOyLz4lFYdJ\nZLB70Jy6pYp3vplSX5ObkXAFlpTLNYor0foQT4uyOQKBgQDRfLhNT9uJJJQ3DWbg\nrSRNvze8WRESj43/kc79Y8MP93TJWazsuzQY5t4q+Hegf4EtKzf6f8/dqiq+A//g\n3B2PDIDVBoEHXSrcW+MK56Vhm2uq2Ue7yk+kf5Z2c7TQx4J7DLoAyYHIHAuZCXs/\n46Ilgkx+gdyJY+Vdpld7SWu8KQKBgQDIDUGrsQlh5w5MI3CPlMyjLQZuVPw/uGG7\nBbuC44lAPuv5wWQD4NDFfBgGjjhBkFz0iLhQkESkFIgjY1i8L59aFpql6FpDT9fX\nKBnCZXrer5zhoyBzn/RDXAtW6yswrwGJn0WGlgULv+PmekVBAa88sj8B24hhW8nt\n9VjKdDYeLwKBgGcdcA7GJzbrZXVvyFsBfuQyIno4kTnEpc3N9MgvSf3a/YZ6+K6S\nO0OiqGsYYLIE8Q3Nv0EzlpryvxVHHLWPQ5F9QxEYoXyBdK6BIFHm0jYobafsSe36\n2JcNIn/t1mwKOITfL9NhXNumSmMrEprRLqgt6f8/ZtHN9UHSti7+ZeR5AoGBAJ/0\nQYr3PepC5eKo/4o+TrU1/gtf9mU4lyQDvF82cXqmFOYY5FBZhHQy+b7cHk0GEd0Q\nKFd6Uvfi1st81ul5Jm/Q3QxE0U862vjUvmv52hmNzuF3Hi51OchWI1b3KAyAEbmp\nWNz4vMYdQyr4nsEQiL3+Q3THxK8bxkR2xOzzqIXPAoGBAJcwLtPl1QJ8d9qCKuRe\nJ8/z90kCBtnS+hNlK23pUq+OeJJGxigUC+vUvfngfTQswQAf9mz0PMXMOTsqqOST\nPgmXUCcbS8Uc30+d2W1w2IuvnIv+q9A20brduYaKZhWHRstHDkMvKYwmNbXVKLCT\n+dY3MxtGw3CxCNKST21gGnfv\n-----END PRIVATE KEY-----\n",
+    "client_email": "attendance-tracker@quiet-antler-267221.iam.gserviceaccount.com",
+  "client_id": "107996989189378969200",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/attendance-tracker%40quiet-antler-267221.iam.gserviceaccount.com"
+}

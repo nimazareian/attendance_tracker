@@ -18,7 +18,7 @@ data = sheet.get_all_records()  # Get a list of all records
 studentNum = int(input("Enter your student #: "))
 
 # look for User Row based on ID in list of dicts todo: if user is not found throw exception or write error so next
-#  steps don't run
+#  steps don't run todo: check if 3 time
 matchedID = next((person for person in data if person['ID'] == studentNum), 'User not Found')
 print(matchedID)
 
@@ -42,10 +42,12 @@ print(alreadyTappedOut)
 
 # add tapped time
 if not alreadyTappedIn and not alreadyTappedOut:
-    sheet.update_cell(rowNum, 3, currentHour) # todo: find a better way to determine what col to update. eg. use date?
+    colNum = sheet.find(colInName).col
+    sheet.update_cell(rowNum, colNum, currentHour)
     print('timed in')
 elif alreadyTappedIn and not alreadyTappedOut:
-    sheet.update_cell(rowNum, 4, currentHour)
+    colNum = sheet.find(colOutName).col
+    sheet.update_cell(rowNum, colNum, currentHour)
     print('timed out')
 else:
     print("couldn't time in/out - Have you already timed in and out for today?")
