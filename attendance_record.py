@@ -58,12 +58,15 @@ class AttendanceRecord:
             col_num = sheet.find(col_in_name).col
             sheet.update_cell(row_num, col_num, current_hour)
             print('timed in')
+            return True
         elif already_tapped_in and not already_tapped_out:
             col_num = sheet.find(col_out_name).col
             sheet.update_cell(row_num, col_num, current_hour)
             print('timed out')
+            return True
         else:
             print("couldn't time in/out - Have you already timed in and out for today?")
+            return False
 
 
     # Add Sheet todo steps:
