@@ -14,8 +14,8 @@ class AttendanceRecord:
                 "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
         creds = ServiceAccountCredentials.from_json_keyfile_name("creds.json", scope)
         client = gspread.authorize(creds)
-        GSheet = client.open(self.sheet_name)  # Get Spreadsheet based on name "API Call Test"
-        return GSheet
+        g_sheet = client.open(self.sheet_name)  # Get Spreadsheet based on name "API Call Test"
+        return g_sheet
 
     def get_all_sheet_record(self):
         sheet = self.get_google_sheet()
@@ -42,25 +42,25 @@ class AttendanceRecord:
 
         # get current date
         pst = pytz.timezone('America/Los_Angeles')
-        currentTime = datetime.now(pst)
+        current_time = datetime.now(pst)
 
-        currentDay = str(currentTime.day) # calendar day
-        currentHour = str(currentTime.time())  # hour:min:sec
+        current_day = str(current_time.day) # calendar day
+        current_hour = str(current_time.time())  # hour:min:sec
 
         # check if has already tapped in
-        colInName = currentDay + ' IN'
-        colOutName = currentDay + ' OUT'
-        alreadyTappedIn = matched_id[colInName] != ''
-        alreadyTappedOut = matched_id[colOutName] != ''
+        col_in_name = current_day + ' IN'
+        col_out_name = current_day + ' OUT'
+        already_tapped_in = matched_id[col_in_name] != ''
+        already_tapped_out = matched_id[col_out_name] != ''
 
         # add tapped time
-        if not alreadyTappedIn and not alreadyTappedOut:
-            colNum = sheet.find(colInName).col
-            sheet.update_cell(row_num, colNum, currentHour)
+        if not already_tapped_in and not already_tapped_out:
+            col_num = sheet.find(col_in_name).col
+            sheet.update_cell(row_num, col_num, current_hour)
             print('timed in')
-        elif alreadyTappedIn and not alreadyTappedOut:
-            colNum = sheet.find(colOutName).col
-            sheet.update_cell(row_num, colNum, currentHour)
+        elif already_tapped_in and not already_tapped_out:
+            col_num = sheet.find(col_out_name).col
+            sheet.update_cell(row_num, col_num, current_hour)
             print('timed out')
         else:
             print("couldn't time in/out - Have you already timed in and out for today?")
