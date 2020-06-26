@@ -7,7 +7,7 @@ attendance_tracker = AttendanceRecord(sheet_name="API Call Test") # file name
 screen_width = 800
 screen_height = 480
 screen_padding = 10
-feedback_color = 'yellow'
+feedback_color = 'white'
 student_num = ''
 added_record = False # to determine the feedback_color
 
@@ -22,6 +22,7 @@ root.resizable(False, False)
 # adding frame
 label_frame = LabelFrame(root, text="Ten Ton Robotics Automated Attendance Tracking System", padx=50, pady=20, height=400, width=700)
 label_frame.pack(fill="both", expand="yes")
+
 
 # creating labels
 scan_card_label = Label(label_frame, text="SCAN YOUR STUDENT CARD")
@@ -44,7 +45,7 @@ student_num_entry.place(relx=0.5, rely=0.55, anchor=CENTER)
 
 # colored feedback
 canvas = Canvas(label_frame, width=600, height=150)
-canvas.create_rectangle(0, 0, 600, 150, fill=feedback_color, outline="")
+feedback_rectangle = canvas.create_rectangle(0, 0, 600, 150, fill=feedback_color, outline="")
 canvas.place(relx=0.5, rely=0.82, anchor=CENTER)
 
 
@@ -52,7 +53,8 @@ def get_student_num(event):
     global student_num  
     global added_record  
     global feedback_color
-    
+    global feedback_rectangle
+
     if event.char in '12345567890' and len(student_num) < 7:                         
         student_num += event.char                                  
         print('>', student_num)                                           
@@ -63,9 +65,13 @@ def get_student_num(event):
         student_num_entry['text'] = "Student # "
 
         if added_record:
-            feedback_color = 'green'
+            # feedback_color = 'green'
+            label_frame['bg'] = 'green'
+            print('should be green now')
         else:
-            feedback_color = 'red'
+            # feedback_color = 'red'
+            label_frame['bg'] = 'red'
+            print('should be red now')
 
 # bind key
 root.bind('<Key>', get_student_num)
