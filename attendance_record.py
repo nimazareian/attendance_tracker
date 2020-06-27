@@ -39,7 +39,7 @@ class AttendanceRecord:
         sheet = self.get_google_sheet().sheet1 # todo: refactor sheet1 so you can select between different sheets
         matched_id = self.get_student_record(student_num)
         row_num = self.get_student_row_num(student_num)
-
+        
         # get current date
         pst = pytz.timezone('America/Los_Angeles')
         current_time = datetime.now(pst)
