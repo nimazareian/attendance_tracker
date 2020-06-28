@@ -2,6 +2,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 import pytz
+from enum_status import Status
 
 class AttendanceRecord:
 
@@ -58,15 +59,15 @@ class AttendanceRecord:
             col_num = sheet.find(col_in_name).col
             sheet.update_cell(row_num, col_num, current_hour)
             print('timed in')
-            return True
+            return Status.LOGGED_IN
         elif already_tapped_in and not already_tapped_out:
             col_num = sheet.find(col_out_name).col
             sheet.update_cell(row_num, col_num, current_hour)
             print('timed out')
-            return True
+            return Status.LOGGED_OUT
         else:
             print("couldn't time in/out - Have you already timed in and out for today?")
-            return False
+            return Status.ALREADY_LOGGED_OUT
 
 
     # Add Sheet todo steps:
