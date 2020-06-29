@@ -2,6 +2,8 @@ from tkinter import *
 import tkinter.font as font
 from attendance_record import AttendanceRecord
 import time
+from datetime import datetime
+import pytz
 from enum_status import Status
 
 #constants
@@ -13,7 +15,12 @@ feedback_color = 'white'
 student_num = ''
 # scan_status = False # to determine the feedback_color
 
-# fonts
+# time
+# pst = pytz.timezone('America/Los_Angeles')
+# current_time = datetime.now(pst)
+
+# current_day = str(current_time.day) # calendar day
+# current_hour = str(current_time.time())  # hour:min:sec
 
 # window
 root = Tk()
@@ -28,16 +35,27 @@ default_color = label_frame.cget('bg')
 
 # creating labels
 scan_card_label = Label(label_frame, text="SCAN YOUR STUDENT CARD")
-scan_card_label.config(font=('Roboto', 32, 'bold'))
+scan_card_label.config(font=('Roboto', 38, 'bold'))
 scan_card_label.place(relx=0.5, rely=0.15, anchor=CENTER)
 
-welcome_student_label = Label(label_frame, text="") #Welcome, 
-welcome_student_label.config(font=('Roboto', 26))
-welcome_student_label.place(relx=0.5, rely=0.4, anchor=CENTER)
+clock_label = Label(label_frame, text='') 
+clock_label.config(font=('Digital-7', 65))
+clock_label.place(relx=0.5, rely=0.4, anchor=CENTER)
 
-student_num_entry = Label(label_frame, text="") #Student # 
+welcome_student_label = Label(label_frame, text='') #''
+welcome_student_label.config(font=('Roboto', 26))
+welcome_student_label.place(relx=0.5, rely=0.80, anchor=CENTER)
+
+student_num_entry = Label(label_frame, text='') #Student # 
 student_num_entry.config(font=('Roboto', 22))
-student_num_entry.place(relx=0.5, rely=0.55, anchor=CENTER)
+student_num_entry.place(relx=0.5, rely=0.65, anchor=CENTER)
+
+def tick():
+    # get the current local time from the PC
+    time_string = time.strftime('%H:%M') #:%S
+    # if time string has changed, update it
+    clock_label.config(text=time_string)
+    clock_label.after(30000, tick) # could be 60000ms
 
 def get_student_num(event):
     global student_num  
@@ -92,6 +110,7 @@ def unsuccessful_scan(status):
         welcome_student_label.config(text='Already logged in and out') # todo: differentiate msg between signing in and out
     else:
         welcome_student_label.config(text='User not found') # todo: differentiate msg between signing in and out
+    student_num_entry.config(text='')
 
     label_frame.after(2000, bg_regular_color)
 
@@ -111,13 +130,12 @@ def same_background_color():
     scan_card_label['bg'] = label_frame['bg']
     student_num_entry['bg'] = label_frame['bg']
     welcome_student_label['bg'] = label_frame['bg']
+    clock_label['bg'] = label_frame['bg']
+
 
 # bind key - read key's pressed or code scanned
-print('can student num be shown here????????')
-print(student_num)
 root.bind('<Key>', get_student_num)
+tick()
 
-# todo: if wrong code is entered the code crashes?
-# todo: instead of adding timer to individual elements, change the entire screen for few seconds
 
 root.mainloop()
