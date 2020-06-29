@@ -87,19 +87,22 @@ def get_student_num(event):
         student_num = ''
 
     
-def successful_scan(status, student_num):
+def successful_scan(status, student_num_parameter):
     label_frame['bg'] = 'green'
     same_background_color()
 
-    student_info = attendance_tracker.get_student_record(int(student_num))
+    student_info = attendance_tracker.get_student_record(int(student_num_parameter))
     if status == Status.LOGGED_IN:
         welcome_student_label.config(text='Welcome, ' + student_info['Name']) # todo: differentiate msg between signing in and out
-        student_num_entry.config(text='Logged in Student # ' + student_num)
+        student_num_entry.config(text='Logged in Student # ' + student_num_parameter)
     else:
         welcome_student_label.config(text='Bye ' + student_info['Name']) # todo: differentiate msg between signing in and out
-        student_num_entry.config(text='Logged out Student # ' + student_num)
+        student_num_entry.config(text='Logged out Student # ' + student_num_parameter)
+    
+    # global student_num
+    # student_num = ''
 
-    label_frame.after(2000, bg_regular_color)
+    label_frame.after(1000, bg_regular_color)
 
 
 def unsuccessful_scan(status):
@@ -112,7 +115,10 @@ def unsuccessful_scan(status):
         welcome_student_label.config(text='User not found') # todo: differentiate msg between signing in and out
     student_num_entry.config(text='')
 
-    label_frame.after(2000, bg_regular_color)
+    # global student_num
+    # student_num = ''
+
+    label_frame.after(1000, bg_regular_color)
 
 
 def bg_regular_color():
