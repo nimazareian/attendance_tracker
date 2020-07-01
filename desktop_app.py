@@ -8,19 +8,11 @@ from enum_status import Status
 
 #constants
 attendance_tracker = AttendanceRecord(sheet_name="API Call Test") # file name
-screen_width = 800
+screen_width = 800 # max screen size for desired Raspberry Pi screen
 screen_height = 480
 screen_padding = 10
 feedback_color = 'white'
 student_num = ''
-# scan_status = False # to determine the feedback_color
-
-# time
-# pst = pytz.timezone('America/Los_Angeles')
-# current_time = datetime.now(pst)
-
-# current_day = str(current_time.day) # calendar day
-# current_hour = str(current_time.time())  # hour:min:sec
 
 # window
 root = Tk()
@@ -31,7 +23,7 @@ root.resizable(False, False)
 # adding frame
 label_frame = LabelFrame(root, text="Ten Ton Robotics Automated Attendance Tracking System", padx=50, pady=20, height=400, width=700)
 label_frame.pack(fill="both", expand="yes")
-default_color = label_frame.cget('bg')
+default_color = label_frame.cget('bg') 
 
 # creating labels
 scan_card_label = Label(label_frame, text="SCAN YOUR STUDENT CARD")
@@ -50,16 +42,17 @@ student_num_entry = Label(label_frame, text='') #Student #
 student_num_entry.config(font=('Roboto', 22))
 student_num_entry.place(relx=0.5, rely=0.65, anchor=CENTER)
 
+# displays time on screen
 def tick():
-    # get the current local time from the PC
+    # get the current local time from the PC 
     time_string = time.strftime('%H:%M') #:%S
     # if time string has changed, update it
     clock_label.config(text=time_string)
     clock_label.after(30000, tick) # could be 60000ms
 
+# gets student num and logs it in the main Google Sheet
 def get_student_num(event):
     global student_num  
-    # global scan_status  
     global feedback_color
 
     if event.char in '12345567890' and len(student_num) < 7:    
@@ -83,44 +76,41 @@ def get_student_num(event):
             successful_scan(scan_status, student_num)
         else:
             unsuccessful_scan(scan_status)
-                
+
+        # reset student num after scan        
         student_num = ''
 
-    
+# flashes green and writes a message to user
 def successful_scan(status, student_num_parameter):
     label_frame['bg'] = 'green'
     same_background_color()
 
     student_info = attendance_tracker.get_student_record(int(student_num_parameter))
     if status == Status.LOGGED_IN:
-        welcome_student_label.config(text='Welcome, ' + student_info['Name']) # todo: differentiate msg between signing in and out
+        welcome_student_label.config(text='Welcome, ' + student_info['Name']) 
         student_num_entry.config(text='Logged in Student # ' + student_num_parameter)
     else:
-        welcome_student_label.config(text='Bye ' + student_info['Name']) # todo: differentiate msg between signing in and out
+        welcome_student_label.config(text='Bye ' + student_info['Name'])
         student_num_entry.config(text='Logged out Student # ' + student_num_parameter)
     
-    # global student_num
-    # student_num = ''
-
+    # after 1000 ms resets background  
     label_frame.after(1000, bg_regular_color)
 
-
+# flashes red and writes a msg to user
 def unsuccessful_scan(status):
     label_frame['bg'] = 'red'
     same_background_color()
     
     if status == Status.ALREADY_LOGGED_OUT:
-        welcome_student_label.config(text='Already logged in and out') # todo: differentiate msg between signing in and out
+        welcome_student_label.config(text='Already logged in and out for today')
     else:
-        welcome_student_label.config(text='User not found') # todo: differentiate msg between signing in and out
+        welcome_student_label.config(text='User not found')
     student_num_entry.config(text='')
 
-    # global student_num
-    # student_num = ''
-
+    # after 1000 ms resets background  
     label_frame.after(1000, bg_regular_color)
 
-
+# reset background and texts
 def bg_regular_color():
     global student_num
 
@@ -132,11 +122,13 @@ def bg_regular_color():
 
     student_num = ''
 
+# makes the text backgrounds the same color as the background of window
 def same_background_color():
-    scan_card_label['bg'] = label_frame['bg']
-    student_num_entry['bg'] = label_frame['bg']
-    welcome_student_label['bg'] = label_frame['bg']
-    clock_label['bg'] = label_frame['bg']
+    frame_bg = label_frame['bg']
+    scan_card_label['bg'] = frame_bg
+    student_num_entry['bg'] = frame_bg
+    welcome_student_label['bg'] = frame_bg
+    clock_label['bg'] = frame_bg
 
 
 # bind key - read key's pressed or code scanned

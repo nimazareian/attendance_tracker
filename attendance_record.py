@@ -4,8 +4,10 @@ from datetime import datetime
 import pytz
 from enum_status import Status
 
+# log time in google sheet
 class AttendanceRecord:
 
+    # class constructor
     def __init__(self, sheet_name):
         self.sheet_name = sheet_name
 
@@ -18,10 +20,10 @@ class AttendanceRecord:
         g_sheet = client.open(self.sheet_name)  # Get Spreadsheet based on name "API Call Test"
         return g_sheet
 
+    # get all sheet filled cells
     def get_all_sheet_record(self):
         sheet = self.get_google_sheet()
         return sheet.sheet1.get_all_records()
-
 
     # look for User Row based on ID in list of dicts
     def get_student_record(self, student_num): 
@@ -36,6 +38,7 @@ class AttendanceRecord:
         row_num = index + 2  # Adding 2 since it doesnt take into account first row and index starts at 0
         return row_num
 
+    # add current time to google sheet for student with student_num
     def add_record(self, student_num):
         sheet = self.get_google_sheet().sheet1 # todo: refactor sheet1 so you can select between different sheets
         matched_id = self.get_student_record(student_num)
@@ -79,6 +82,3 @@ class AttendanceRecord:
     # Future Steps:
     #   - Add formulas to the cells to calculate the time spent for each day 
     #   - Display the time spent in a new column 
-
-    # todo:
-    #   - if user is not found throw exception or write error so next steps don't run
