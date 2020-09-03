@@ -18,7 +18,9 @@ student_num = ''
 root = Tk()
 root.title("Ten Ton Robotics")
 root.geometry(f"{screen_width}x{screen_height}+0+0")
+root.attributes('-fullscreen', True)
 root.resizable(False, False)
+root.iconphoto(False, PhotoImage(file='./icon.png'))
 
 # adding frame
 label_frame = LabelFrame(root, text="Ten Ton Robotics Automated Attendance Tracking System", padx=50, pady=20, height=400, width=700)
@@ -61,7 +63,7 @@ def get_student_num(event):
         student_num += event.char                                  
         print('>', student_num)                                           
         student_num_entry['text'] += event.char                                   
-    elif len(student_num) == 7: # If enter pressed
+    elif event.keysym == 'Return': # len(student_num) == 7: # If enter pressed
         print('this is student num ' + student_num)
         try:
             scan_status = attendance_tracker.add_record(int(student_num))
@@ -94,7 +96,7 @@ def successful_scan(status, student_num_parameter):
         student_num_entry.config(text='Logged out Student # ' + student_num_parameter)
     
     # after 1000 ms resets background  
-    label_frame.after(1000, bg_regular_color)
+    label_frame.after(1500, bg_regular_color)
 
 # flashes red and writes a msg to user
 def unsuccessful_scan(status):
@@ -108,7 +110,7 @@ def unsuccessful_scan(status):
     student_num_entry.config(text='')
 
     # after 1000 ms resets background  
-    label_frame.after(1000, bg_regular_color)
+    label_frame.after(1500, bg_regular_color)
 
 # reset background and texts
 def bg_regular_color():
