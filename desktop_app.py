@@ -61,7 +61,7 @@ def get_student_num(event):
         student_num += event.char                                  
         print('>', student_num)                                           
         student_num_entry['text'] += event.char                                   
-    elif len(student_num) == 7:                               # why does it have to be 8 digits to work?
+    elif len(student_num) == 7: # If enter pressed
         print('this is student num ' + student_num)
         try:
             scan_status = attendance_tracker.add_record(int(student_num))

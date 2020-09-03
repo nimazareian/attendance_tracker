@@ -4,6 +4,9 @@ from datetime import datetime
 import pytz
 from enum_status import Status
 
+from colorama import Fore, Back, Style, init
+init(autoreset=True)
+
 # log time in google sheet
 class AttendanceRecord:
 
@@ -47,7 +50,6 @@ class AttendanceRecord:
         # get current date
         pst = pytz.timezone('America/Los_Angeles')
         current_time = datetime.now(pst)
-
         current_day = str(current_time.day) # calendar day
         current_hour = str(current_time.time())  # hour:min:sec
 
@@ -61,16 +63,19 @@ class AttendanceRecord:
         if not already_tapped_in and not already_tapped_out:
             col_num = sheet.find(col_in_name).col
             sheet.update_cell(row_num, col_num, current_hour)
-            print('timed in')
+            print(Back.GREEN + Style.BRIGHT + 'TIMED IN')
             return Status.LOGGED_IN
+
         elif already_tapped_in and not already_tapped_out:
             col_num = sheet.find(col_out_name).col
             sheet.update_cell(row_num, col_num, current_hour)
-            print('timed out')
+            print(Back.GREEN + Style.BRIGHT + 'TIMED OUT')
             return Status.LOGGED_OUT
+
         else:
-            print("couldn't time in/out - Have you already timed in and out for today?")
+            print(Back.RED + Style.BRIGHT + "COULDN'T TIME IN/OUT - Have you already timed in and out for today?")   
             return Status.ALREADY_LOGGED_OUT
+
 
 
     # Add Sheet todo steps:
