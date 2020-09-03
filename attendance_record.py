@@ -7,9 +7,12 @@ from enum_status import Status
 from colorama import Fore, Back, Style, init
 init(autoreset=True)
 
+# Constants
+returned_sheet = None
+matched_student = None
+
 # log time in google sheet
 class AttendanceRecord:
-
     # class constructor
     def __init__(self, sheet_name):
         self.sheet_name = sheet_name
@@ -25,11 +28,12 @@ class AttendanceRecord:
 
     # get all sheet filled cells
     def get_all_sheet_record(self):
-        sheet = self.get_google_sheet()
-        return sheet.sheet1.get_all_records()
+        global returned_sheet
+        return returned_sheet.sheet1.get_all_records()
 
     # look for User Row based on ID in list of dicts
     def get_student_record(self, student_num): 
+        global matched_student
         student_record = self.get_all_sheet_record()
         matched_student = next((student for student in student_record if student['ID'] == student_num), 'User not Found')
         return matched_student
@@ -43,7 +47,10 @@ class AttendanceRecord:
 
     # add current time to google sheet for student with student_num
     def add_record(self, student_num):
-        sheet = self.get_google_sheet().sheet1 # todo: refactor sheet1 so you can select between different sheets
+        global returned_sheet
+        returned_sheet = self.get_google_sheet()
+
+        sheet = returned_sheet.sheet1 # todo: refactor sheet1 so you can select between different sheets
         matched_id = self.get_student_record(student_num)
         row_num = self.get_student_row_num(student_num)
         
@@ -63,17 +70,18 @@ class AttendanceRecord:
         if not already_tapped_in and not already_tapped_out:
             col_num = sheet.find(col_in_name).col
             sheet.update_cell(row_num, col_num, current_hour)
-            print(Back.GREEN + Style.BRIGHT + 'TIMED IN')
+            
+            print(Back.GREEN + Style.BRIGHT + 'TIMED IN ' + matched_student['Name'])
             return Status.LOGGED_IN
 
         elif already_tapped_in and not already_tapped_out:
             col_num = sheet.find(col_out_name).col
             sheet.update_cell(row_num, col_num, current_hour)
-            print(Back.GREEN + Style.BRIGHT + 'TIMED OUT')
+            print(Back.GREEN + Style.BRIGHT + 'TIMED OUT ' + matched_student['Name'])
             return Status.LOGGED_OUT
 
         else:
-            print(Back.RED + Style.BRIGHT + "COULDN'T TIME IN/OUT - Have you already timed in and out for today?")   
+            print(Back.RED + Style.BRIGHT + "COULDN'T TIME IN/OUT " + matched_student['Name'] + " - Have you already timed in and out for today?")   
             return Status.ALREADY_LOGGED_OUT
 
 
