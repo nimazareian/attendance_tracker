@@ -7,6 +7,7 @@ from colorama import Fore, Back, Style, init
 init(autoreset=True)
 
 # Global Variables
+template_worksheet_name = 'Template - DO NOT TOUCH'
 spreadsheet = None
 worksheet = None
 matched_student = None
@@ -51,13 +52,12 @@ class AttendanceRecord:
     def add_new_month_sheet(self):
         global spreadsheet
         current_month = get_current_month()
-        new_sheet = spreadsheet.worksheet('Template - DO NOT TOUCH').duplicate(insert_sheet_index=1 , new_sheet_name=current_month)
+        new_sheet = spreadsheet.worksheet(template_worksheet_name).duplicate(insert_sheet_index=1 , new_sheet_name=current_month)
         return new_sheet
 
     # get all sheet filled cells
     def get_all_sheet_records(self):
         global worksheet
-        if (worksheet == None): print("WORKSHEET IS NONNNNEEEEE")
         return worksheet.get_all_records()
 
     # look for User Row based on Student # in list of dicts
