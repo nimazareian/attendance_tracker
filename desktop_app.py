@@ -7,7 +7,8 @@ import pytz
 from enum_status import Status
 
 #constants
-attendance_tracker = AttendanceRecord(sheet_name="API Call Test") # file name
+spreadsheet_file_name = "2020-2021 Attendance Tracker"
+attendance_tracker = AttendanceRecord(spreadsheet_name=spreadsheet_file_name)
 screen_width = 800 # max screen size for desired Raspberry Pi screen
 screen_height = 480
 screen_padding = 10
@@ -70,7 +71,7 @@ def get_student_num(event):
         except Exception as e:
             print('Wrong Student #')
             print(e)
-            scan_status(Status.NOT_FOUND)
+            scan_status = Status.NOT_FOUND
             student_num = ''
 
         student_num_entry['text'] = "Student # "

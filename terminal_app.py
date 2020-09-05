@@ -1,7 +1,9 @@
 from attendance_record import AttendanceRecord
 from colorama import Style
 
-attendance_tracker = AttendanceRecord(sheet_name="API Call Test") # file name
+spreadsheet_file_name = "2020-2021 Attendance Tracker"
+attendance_tracker = AttendanceRecord(spreadsheet_name=spreadsheet_file_name)
+
 # app running in terminal
 while True:
     user_input = input("SCAN YOUR STUDENT CARD: ")
