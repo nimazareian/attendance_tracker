@@ -1,64 +1,91 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-from datetime import datetime
-import pytz
 from enum_status import Status
+from util import *
 
 from colorama import Fore, Back, Style, init
 init(autoreset=True)
 
-# Constants
-returned_sheet = None
+# Global Variables
+spreadsheet = None
+worksheet = None
 matched_student = None
+current_time = None
 
 # log time in google sheet
+# Google GSpread API Examples: https://developers.google.com/sheets/api/reference/rest
+# Detailed GSpread Documentation: https://gspread.readthedocs.io/en/latest/index.html
+# NOTE: spreadsheet is the name of the entire document. 
+#       worksheet refers to 1 sheet within spreadsheet 
 class AttendanceRecord:
     # class constructor
     def __init__(self, sheet_name):
         self.sheet_name = sheet_name
 
     # API set up - Getting entire sheet
-    def get_google_sheet(self):
+    def __get_spreadsheet(self):
         scope = ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/auth/spreadsheets',
                 "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
         creds = ServiceAccountCredentials.from_json_keyfile_name("creds.json", scope)
         client = gspread.authorize(creds)
-        g_sheet = client.open(self.sheet_name)  # Get Spreadsheet based on name "API Call Test"
-        return g_sheet
+        spreadsheet = client.open(self.sheet_name)  # Get Spreadsheet based on name "API Call Test"
+        return spreadsheet
+
+    # get worksheet with the same name as current month
+    def get_worksheet(self):
+        global spreadsheet
+        global worksheet
+
+        spreadsheet = self.__get_spreadsheet()
+        current_month = get_current_month()
+
+        for worksheet in spreadsheet.worksheets():
+            if (worksheet.title == current_month):
+                worksheet = spreadsheet.worksheet(current_month)
+                return worksheet
+
+        worksheet = self.add_new_month_sheet()
+        return worksheet
+
+    # At the start of the month, duplicates the Template sheet with the new month as the name
+    def add_new_month_sheet(self):
+        global spreadsheet
+        current_month = get_current_month()
+        new_sheet = spreadsheet.worksheet('Template - DO NOT TOUCH').duplicate(insert_sheet_index=1 , new_sheet_name=current_month)
+        return new_sheet
 
     # get all sheet filled cells
-    def get_all_sheet_record(self):
-        global returned_sheet
-        return returned_sheet.sheet1.get_all_records()
+    def get_all_sheet_records(self):
+        global worksheet
+        if (worksheet == None): print("WORKSHEET IS NONNNNEEEEE")
+        return worksheet.get_all_records()
 
-    # look for User Row based on ID in list of dicts
+    # look for User Row based on Student # in list of dicts
+    # retuns dictionary of student hours
     def get_student_record(self, student_num): 
         global matched_student
-        student_record = self.get_all_sheet_record()
-        matched_student = next((student for student in student_record if student['ID'] == student_num), 'User not Found')
+        student_records = self.get_all_sheet_records()
+        matched_student = next((student for student in student_records if student['ID'] == student_num), 'User not Found')
         return matched_student
 
     # what row is student's data in, in the GSheet
     def get_student_row_num(self, student_num):
-        sheet_data = self.get_all_sheet_record()
-        index = next((i for i, item in enumerate(sheet_data) if item["ID"] == student_num), 'Student Num not found')
+        sheet_data = self.get_all_sheet_records()
+        index = next((i for i, item in enumerate(sheet_data) if item['ID'] == student_num), 'Student Num not found')
         row_num = index + 2  # Adding 2 since it doesnt take into account first row and index starts at 0
         return row_num
 
     # add current time to google sheet for student with student_num
     def add_record(self, student_num):
-        global returned_sheet
-        returned_sheet = self.get_google_sheet()
+        global matched_student
 
-        sheet = returned_sheet.sheet1 # todo: refactor sheet1 so you can select between different sheets
+        worksheet = self.get_worksheet()
         matched_id = self.get_student_record(student_num)
         row_num = self.get_student_row_num(student_num)
         
         # get current date
-        pst = pytz.timezone('America/Los_Angeles')
-        current_time = datetime.now(pst)
-        current_day = str(current_time.day) # calendar day
-        current_hour = str(current_time.time())  # hour:min:sec
+        current_day = get_current_day()
+        current_hour = get_current_hour()
 
         # check if has already tapped in
         col_in_name = current_day + ' IN'
@@ -68,27 +95,25 @@ class AttendanceRecord:
 
         # add tapped time
         if not already_tapped_in and not already_tapped_out:
-            col_num = sheet.find(col_in_name).col
-            sheet.update_cell(row_num, col_num, current_hour)
+            col_num = worksheet.find(col_in_name).col
+            worksheet.update_cell(row_num, col_num, current_hour)
             
-            print(Back.GREEN + Style.BRIGHT + 'TIMED IN ' + matched_student['Name'])
+            print(Back.GREEN + Style.BRIGHT + 'TIMED IN ')# + matched_student['Name'])
             return Status.LOGGED_IN
 
         elif already_tapped_in and not already_tapped_out:
-            col_num = sheet.find(col_out_name).col
-            sheet.update_cell(row_num, col_num, current_hour)
-            print(Back.GREEN + Style.BRIGHT + 'TIMED OUT ' + matched_student['Name'])
+            col_num = worksheet.find(col_out_name).col
+            worksheet.update_cell(row_num, col_num, current_hour)
+            print(Back.GREEN + Style.BRIGHT + 'TIMED OUT ')# + matched_student['Name'])
             return Status.LOGGED_OUT
 
         else:
-            print(Back.RED + Style.BRIGHT + "COULDN'T TIME IN/OUT " + matched_student['Name'] + " - Have you already timed in and out for today?")   
+            print(Back.RED + Style.BRIGHT + "COULDN'T TIME IN/OUT ")# + matched_student['Name'] + " - Have you already timed in and out for today?")   
             return Status.ALREADY_LOGGED_OUT
 
 
 
     # Add Sheet todo steps:
-    #   - create a new sheet within the Google Sheet document
-    #       - Name it what the month is
     #   - Take all of the names and student numbers from the main sheet and add them to the first 2 columns
     #   - Add titles for Name, Student ID, and dates of the month in/out
     #

@@ -63,13 +63,14 @@ def get_student_num(event):
         student_num += event.char                                  
         print('>', student_num)                                           
         student_num_entry['text'] += event.char                                   
-    elif event.keysym == 'Return': # len(student_num) == 7: # If enter pressed
-        print('this is student num ' + student_num)
+    elif event.keysym == 'Return': # If enter pressed, add record
+        print('Attempting to add record for student #' + student_num)
         try:
             scan_status = attendance_tracker.add_record(int(student_num))
-        except:
+        except Exception as e:
             print('Wrong Student #')
-            unsuccessful_scan(Status.NOT_FOUND)
+            print(e)
+            scan_status(Status.NOT_FOUND)
             student_num = ''
 
         student_num_entry['text'] = "Student # "
@@ -87,12 +88,12 @@ def successful_scan(status, student_num_parameter):
     label_frame['bg'] = 'green'
     same_background_color()
 
-    student_info = attendance_tracker.get_student_record(int(student_num_parameter))
+    # student_info = attendance_tracker.get_student_record(int(student_num_parameter))#########################################################
     if status == Status.LOGGED_IN:
-        welcome_student_label.config(text='Welcome, ' + student_info['Name']) 
+        # welcome_student_label.config(text='Welcome, ' + student_info['Name']) #########################################################
         student_num_entry.config(text='Logged in Student # ' + student_num_parameter)
     else:
-        welcome_student_label.config(text='Bye ' + student_info['Name'])
+        # welcome_student_label.config(text='Bye ' + student_info['Name'])#########################################################
         student_num_entry.config(text='Logged out Student # ' + student_num_parameter)
     
     # after 1000 ms resets background  
@@ -136,6 +137,6 @@ def same_background_color():
 # bind key - read key's pressed or code scanned
 root.bind('<Key>', get_student_num)
 tick()
-
+ 
 
 root.mainloop()
