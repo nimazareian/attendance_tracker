@@ -20,8 +20,8 @@ current_time = None
 #       worksheet refers to 1 sheet within spreadsheet 
 class AttendanceRecord:
     # class constructor
-    def __init__(self, spreadsheet_name):
-        self.spreadsheet_name = spreadsheet_name
+    def __init__(self, spreadsheet_key):
+        self.spreadsheet_key = spreadsheet_key
 
     # API set up - Getting entire sheet
     def __get_spreadsheet(self):
@@ -29,7 +29,7 @@ class AttendanceRecord:
                 "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
         creds = ServiceAccountCredentials.from_json_keyfile_name("creds.json", scope)
         client = gspread.authorize(creds)
-        spreadsheet = client.open(self.spreadsheet_name)  # Get Spreadsheet based on name "API Call Test"
+        spreadsheet = client.open_by_key(self.spreadsheet_key)  # Get Spreadsheet based on name "API Call Test"
         return spreadsheet
 
     # get worksheet with the same name as current month

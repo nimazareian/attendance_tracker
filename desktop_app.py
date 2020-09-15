@@ -7,8 +7,8 @@ import pytz
 from enum_status import Status
 
 #constants
-spreadsheet_file_name = "2020-2021 Attendance Tracker"
-attendance_tracker = AttendanceRecord(spreadsheet_name=spreadsheet_file_name)
+spreadsheet_key = "1LbaJW7H0jgQkCwZh3iQKG0xEEa54a5KUYbm_cikwMtQ"
+attendance_tracker = AttendanceRecord(spreadsheet_key=spreadsheet_key)
 screen_width = 800 # max screen size for desired Raspberry Pi screen
 screen_height = 480
 screen_padding = 10
